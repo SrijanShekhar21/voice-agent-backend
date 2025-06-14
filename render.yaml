@@ -27,8 +27,6 @@ services:
         fromEnvironment: LIVEKIT_API_KEY
       - key: LIVEKIT_API_SECRET
         fromEnvironment: LIVEKIT_API_SECRET
-      - key: FRONTEND_URL
-        fromEnvironment: FRONTEND_URL
 
   # ---------------------
   # The LiveKit Python Agent
