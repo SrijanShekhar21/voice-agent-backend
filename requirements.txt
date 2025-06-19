@@ -1,4 +1,4 @@
-livekit-agents[deepgram,openai,cartesia,silero,turn-detector,speechify,google]~=1.0
+livekit-agents[deepgram,openai,cartesia,silero,turn-detector,speechify,google,sarvam,aws]~=1.0
 livekit-plugins-noise-cancellation~=0.2
 python-dotenv
 livekit-api
@@ -6,3 +6,4 @@ flask[async]
 flask
 flask-cors
 uvicorn
+langdetect
