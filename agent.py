@@ -15,7 +15,7 @@ from livekit.plugins import (
 )
 import aws
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
-from api import Assistant
+from assistant_tools import Assistant
 from prompts import WELCOME_MESSAGE
 from custom_plugins.custom_tts import TTS as SarvamTTS
 
