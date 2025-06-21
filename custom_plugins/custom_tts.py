@@ -37,6 +37,8 @@ from livekit.agents import (
     utils,
 )
 
+
+
 SARVAM_TTS_BASE_URL = "https://api.sarvam.ai/text-to-speech"
 
 # Sarvam TTS specific models and speakers
@@ -77,11 +79,8 @@ MODEL_SPEAKER_COMPATIBILITY = {
         "all": ["anushka", "manisha", "vidya", "arya", "abhilash", "karun", "hitesh"],
     },
 }
-
 def detect_bcp47_language(text: str) -> str:
-    # Use only the first 10 words to reduce latency
-    short_text = " ".join(text.split()[:10])    
-    lang_code = detect(short_text)
+    lang_code = detect(text)
     return {
         "hi": "hi-IN",
         "en": "en-IN",
@@ -95,6 +94,9 @@ def detect_bcp47_language(text: str) -> str:
         "ta": "ta-IN",
         "te": "te-IN",
     }.get(lang_code, "en-IN")
+    # print(f"Detected raw lang code: {lang_code}")
+    # print(f"In hereeeeeeeeeeeeeeeeeeee                               ")
+    # return "hi-IN" if lang_code == "hi" else "en-IN"
 
 def validate_model_speaker_compatibility(model: str, speaker: str) -> bool:
     """Validate that the speaker is compatible with the model version."""

@@ -139,39 +139,7 @@ class ChunkedStream(tts.ChunkedStream):
                 read_timeout=10,
                 retries={"mode": "standard", "total_max_attempts": 1},
             )
-            import re
-
             async with self._tts._session.client("polly", config=config) as client:  # type: ignore
-                print("LLM text                ;", self._input_text)
-
-                # Clean Gemini output
-                cleaned_text = self._input_text.strip()
-
-                # Remove markdown blocks like ```xml and ```
-                cleaned_text = re.sub(r"^```(?:xml)?\s*", "", cleaned_text, flags=re.IGNORECASE)
-                cleaned_text = re.sub(r"```$", "", cleaned_text)
-
-                # Remove all <speak> and </speak> tags
-                cleaned_text = re.sub(r"</?speak>", "", cleaned_text, flags=re.IGNORECASE).strip()
-
-                # Log and skip synthesis if empty
-                if not cleaned_text:
-                    print("⚠️ Skipped empty SSML input")
-                    return
-
-                # Wrap in <speak> and <prosody rate="110%"> to increase speaking rate
-                self._input_text = f'<speak><prosody rate="115%">{cleaned_text}</prosody></speak>'
-                print("Polly SSML Input:       ", self._input_text)
-
-                # Validate SSML XML before synthesis
-                try:
-                    import xml.etree.ElementTree as ET
-                    ET.fromstring(self._input_text)
-                except ET.ParseError as parse_err:
-                    print("❌ Invalid SSML XML:", parse_err)
-                    print("⚠️ Skipping synthesis due to invalid SSML")
-                    return
-
                 response = await client.synthesize_speech(
                     **_strip_nones(
                         {
@@ -179,7 +147,7 @@ class ChunkedStream(tts.ChunkedStream):
                             "OutputFormat": "mp3",
                             "Engine": self._opts.speech_engine,
                             "VoiceId": self._opts.voice,
-                            "TextType": "ssml",
+                            "TextType": "text",
                             "SampleRate": str(self._opts.sample_rate),
                             "LanguageCode": self._opts.language,
                         }
@@ -199,9 +167,6 @@ class ChunkedStream(tts.ChunkedStream):
                             output_emitter.push(data)
 
                     output_emitter.flush()
-                else:
-                    print("⚠️ No AudioStream returned by Polly.")
-                    return
         except botocore.exceptions.ConnectTimeoutError:
             raise APITimeoutError() from None
         except Exception as e:
